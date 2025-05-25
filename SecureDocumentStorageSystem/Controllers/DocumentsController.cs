@@ -18,24 +18,24 @@ namespace SecureDocumentStorageSystem.Controllers
 		
 		}
 
-		[Authorize]
-		[HttpPost]
-		public async Task<IActionResult> Upload(IFormFile file)
-		{
-			if (file == null || file.Length == 0)
-				return BadRequest("No file provided.");
+		
+		//[HttpPost]
+		//public async Task<IActionResult> Upload([FromBody] IFormFile file)
+		//{
+		//	if (file == null || file.Length == 0)
+		//		return BadRequest("No file provided.");
 
-			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-			if (userId == null)
-				return Unauthorized();
+		//	var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+		//	if (userId == null)
+		//		return Unauthorized();
 
-			using var ms = new MemoryStream();
-			await file.CopyToAsync(ms);
-			var content = ms.ToArray();
+		//	using var ms = new MemoryStream();
+		//	await file.CopyToAsync(ms);
+		//	var content = ms.ToArray();
 
-			await _repo.SaveDocumentAsync(Guid.Parse(userId), file.FileName, content);
-			return Ok("File uploaded successfully.");
-		}
+		//	await _repo.SaveDocumentAsync(Guid.Parse(userId), file.FileName, content);
+		//	return Ok("File uploaded successfully.");
+		//}
 
 	}
 }
