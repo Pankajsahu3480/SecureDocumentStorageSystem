@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SecureDocumentStorageSystem.Dto;
+using SecureDocumentStorageSystem.Services;
 using SecureDocumentStorageSystem.Services.Interfaces;
 using System.Security.Claims;
 
@@ -50,5 +51,24 @@ namespace SecureDocumentStorageSystem.Controllers
 			var files = await _docService.ListUserFilesAsync(userId);
 			return Ok(files);
 		}
+
+
+		[HttpDelete("Delete")]
+		public async Task<IActionResult> SoftDeleteDocument([FromQuery] Guid id, [FromQuery] Guid userId)
+		{
+			if (id == Guid.Empty || userId == Guid.Empty)
+				return BadRequest("Both 'id' and 'userId' must be valid GUIDs.");
+
+			try
+			{
+				await _docService.SoftDeleteDocumentAsync(id, userId);
+				return Ok("Document deleted successfully."); // Return 200 with a message
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"An error occurred while soft deleting the document: {ex.Message}");
+			}
+		}
+
 	}
 }

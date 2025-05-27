@@ -1,4 +1,7 @@
-﻿using SecureDocumentStorageSystem.Models;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using SecureDocumentStorageSystem.Data;
+using SecureDocumentStorageSystem.Models;
 using SecureDocumentStorageSystem.Repositories.Interfaces;
 using SecureDocumentStorageSystem.Services.Interfaces;
 
@@ -7,10 +10,11 @@ namespace SecureDocumentStorageSystem.Services
 	public class DocumentService :IDocumentService
 	{
 		private readonly IDocumentRepository _repo;
-
-		public DocumentService(IDocumentRepository repo)
+		private readonly AppDbContext _context;
+		public DocumentService(IDocumentRepository repo, AppDbContext context)
 		{
 			_repo = repo;
+			_context = context;
 		}
 
 		public async Task UploadAsync(Guid userId, string fileName, IFormFile file)
@@ -38,6 +42,23 @@ namespace SecureDocumentStorageSystem.Services
 
 		public Task<IEnumerable<string>> ListUserFilesAsync(Guid userId)
 			=> _repo.ListUserFilesAsync(userId);
+
+
+		public async Task SoftDeleteDocumentAsync(Guid id, Guid userId)
+		{
+			try
+			{
+				var sql = "EXEC dbo.usp_SofDelete @Id = {0}, @UserId = {1}";
+				await _context.Database.ExecuteSqlRawAsync(sql, id, userId);
+			}
+			catch (Exception ex)
+			{
+			
+				throw new ApplicationException("Failed to soft delete the document.", ex);
+			}
+		}
+
+
 	}
 
 }

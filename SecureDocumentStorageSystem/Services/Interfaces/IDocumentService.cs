@@ -8,6 +8,7 @@ namespace SecureDocumentStorageSystem.Services.Interfaces
 		Task<Document?> GetLatestAsync(Guid userId, string fileName);
 		Task<Document?> GetByRevisionAsync(Guid userId, string fileName, int revision);
 		Task<IEnumerable<string>> ListUserFilesAsync(Guid userId);
+		Task SoftDeleteDocumentAsync(Guid userId, Guid fileId);
 
 	}
 }

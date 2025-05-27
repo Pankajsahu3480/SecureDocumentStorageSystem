@@ -8,5 +8,7 @@
 		public byte[] Content { get; set; } = Array.Empty<byte>();
 		public int Version { get; set; }
 		public DateTime UploadedAt { get; set; }
+
+		public bool IsDeleted { get; set;}
 	}
 }
